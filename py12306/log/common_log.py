@@ -81,7 +81,7 @@ class CommonLog(BaseLog):
             self.add_quick_log('WEB 管理页面已开启，请访问 主机地址 + 端口 {} 进行查看'.format(Config().WEB_PORT))
 
         self.add_quick_log()
-        self.flush(file=False, publish=False)
+        self.flush(file=None, publish=False)
         return self
 
     @classmethod
@@ -122,6 +122,9 @@ class CommonLog(BaseLog):
             self.add_quick_log('节点是否主节点: {}'.format(get_true_false_text(Config().is_master(), '是', '否')))
             self.add_quick_log(
                 '子节点提升为主节点: {}'.format(get_true_false_text(Config().NODE_SLAVE_CAN_BE_MASTER, enable, disable)))
+
+        self.add_quick_log('http代理: {} '.format(Config().HTTP_PROXIES))
+
         self.add_quick_log()
         self.flush()
         return self

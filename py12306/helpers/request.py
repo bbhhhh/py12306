@@ -3,6 +3,7 @@ from requests.exceptions import *
 
 from py12306.helpers.func import *
 from requests_html import HTMLSession, HTMLResponse
+from py12306.config import Config
 
 requests.packages.urllib3.disable_warnings()
 
@@ -55,8 +56,11 @@ class Request(HTMLSession):
     def request(self, *args, **kwargs):  # 拦截所有错误
         try:
             if not 'timeout' in kwargs:
-                from py12306.config import Config
+                #from py12306.config import Config
                 kwargs['timeout'] = Config().TIME_OUT_OF_REQUEST
+
+            #kwargs['proxies'] = {"http": "http://135.251.33.16:8080", "https": "http://135.251.33.16:8080"}
+            kwargs['proxies'] = Config().HTTP_PROXIES
             response = super().request(*args, **kwargs)
             return response
         except RequestException as e:
@@ -75,5 +79,6 @@ class Request(HTMLSession):
         from py12306.helpers.cdn import Cdn
         if not cdn: cdn = Cdn.get_cdn()
         url = url.replace(HOST_URL_OF_12306, cdn)
+        print("cdn url={}".format(url))
 
         return self.request(method, url, headers={'Host': HOST_URL_OF_12306}, verify=False, **kwargs)

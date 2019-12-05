@@ -123,7 +123,9 @@ class Job:
                 for date in self.left_dates:
                     self.left_date = date
                     response = self.query_by_date(date)
+                    #print("before handle response")
                     self.handle_response(response)
+                    #print("after handle response")
                     QueryLog.add_query_time_log(time=response.elapsed.total_seconds(), is_cdn=self.is_cdn)
                     if not self.is_alive: return
                     self.safe_stay()
@@ -147,8 +149,10 @@ class Job:
                                                                                                               self.arrive_station))
         url = LEFT_TICKETS.get('url').format(left_date=date, left_station=self.left_station_code,
                                              arrive_station=self.arrive_station_code, type=self.query.api_type)
+        print("ticket query url=%s"%url)
         if Config.is_cdn_enabled() and Cdn().is_ready:
             self.is_cdn = True
+            print("12306 cdn is enabled.")
             return self.query.session.cdn_request(url, timeout=self.query_time_out, allow_redirects=False)
         self.is_cdn = False
         return self.query.session.get(url, timeout=self.query_time_out, allow_redirects=False)
@@ -168,6 +172,7 @@ class Job:
             return False
         for result in results:
             self.ticket_info = ticket_info = result.split('|')
+            print("ticket_info=%s"%self.ticket_info)
             if not self.is_trains_number_valid():  # 车次是否有效
                 continue
             QueryLog.add_log(QueryLog.MESSAGE_QUERY_LOG_OF_EVERY_TRAIN.format(self.get_info_of_train_number()))

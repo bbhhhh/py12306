@@ -1,6 +1,8 @@
 import json
 import pickle
 import re
+
+
 from os import path
 
 from py12306.cluster.cluster import Cluster
@@ -74,7 +76,10 @@ class UserJob:
             else:
                 if Config().is_master() and not self.cookie: self.load_user_from_remote()  # 主节点加载一次 Cookie
                 self.check_heartbeat()
-            if Const.IS_TEST: return
+
+            #即使非test模式，也暂不要保持心跳，登录成功后User线程退出
+            #if Const.IS_TEST: return
+            return
             stay_second(self.check_interval)
 
     def check_heartbeat(self):
@@ -83,7 +88,14 @@ class UserJob:
             return True
         # 只有主节点才能走到这
         if self.is_first_time() or not self.check_user_is_login():
-            if not self.handle_login(): return
+            #if not self.handle_login(): return
+            login_times = 0
+            while not self.handle_login():
+                login_times += 1
+                if login_times == 3:
+                    print("登录失败次数过多，程序退出。")
+                    os._exit(0)
+
 
         self.user_did_load()
         message = UserLog.MESSAGE_USER_HEARTBEAT_NORMAL.format(self.get_name(), Config().USER_HEARTBEAT_INTERVAL)
@@ -113,17 +125,25 @@ class UserJob:
         UserLog.print_start_login(user=self)
         return self.login()
 
+
     def login(self):
         """
         获取验证码结果
         :return 权限校验码
         """
+        self.password = ''
+        while (self.password is None or self.password == ''):
+            self.password = input("请输入用户{}的12306登录密码...\n".format(self.user_name))
+            print("\n你输入的密码是：{}".format(self.password))
+
+
         data = {
             'username': self.user_name,
             'password': self.password,
             'appid': 'otn'
         }
         answer = AuthCode.get_auth_code(self.session)
+        print("auth code answer=%s"%answer)
         data['answer'] = answer
         self.request_device_id()
         response = self.session.post(API_BASE_LOGIN.get('url'), data)

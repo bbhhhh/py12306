@@ -74,6 +74,7 @@ class Cdn:
         if not Config.is_cdn_enabled(): return
         self.load_items()
         CommonLog.add_quick_log(CommonLog.MESSAGE_CDN_START_TO_CHECK.format(len(self.items))).flush()
+        print("cdn start")
         self.restore_items()
         for i in range(self.thread_num):  # 多线程
             create_thread_and_run(jobs=self, callback_name='check_available', wait=False)

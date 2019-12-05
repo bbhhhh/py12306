@@ -97,6 +97,9 @@ class Config:
     # Default time out
     TIME_OUT_OF_REQUEST = 5
 
+    # http proxy
+    HTTP_PROXIES = {}
+
     envs = []
     retry_time = 5
     last_modify_time = 0
@@ -151,6 +154,7 @@ class Config:
 
     def init_envs(self):
         self.envs = EnvLoader.load_with_file(self.CONFIG_FILE)
+        #print("init env_configs=%s"%self.envs)
         self.update_configs(self.envs)
 
     def update_configs(self, envs):

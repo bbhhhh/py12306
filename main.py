@@ -3,6 +3,7 @@ import sys
 
 from py12306.app import *
 from py12306.helpers.cdn import Cdn
+from py12306.log.base import BaseLog
 from py12306.log.common_log import CommonLog
 from py12306.query.query import Query
 from py12306.user.user import User
@@ -12,16 +13,23 @@ from py12306.web.web import Web
 def main():
     load_argvs()
     CommonLog.print_welcome()
+    # 初始化配置
     App.run()
     CommonLog.print_configs()
+    # 加载站点信息
     App.did_start()
-
+    #print('App.did_start() done.')
+    # 检查运行环境的相关目录以及验证码校验的api用户名密码设置是否正确
     App.run_check()
+    #print('App.run_check() done')
+    # 初始化查询任务，获取余票查询url
     Query.check_before_run()
+    #print('Query.check_before_run() done')
 
     ####### 运行任务
     Web.run()
     Cdn.run()
+    #12306账号登录
     User.run()
     Query.run()
     if not Const.IS_TEST:

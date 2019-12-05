@@ -41,6 +41,7 @@ class Query:
 
     def update_query_jobs(self, auto=False):
         self.query_jobs = Config().QUERY_JOBS
+        #print("query_jobs=%s"%self.query_jobs)
         if auto:
             QueryLog.add_quick_log(QueryLog.MESSAGE_JOBS_DID_CHANGED).flush()
             self.refresh_jobs()
@@ -113,6 +114,7 @@ class Query:
         QueryLog.print_init_jobs(jobs=self.jobs)
 
     def init_job(self, job):
+        #print("initing job=%s"%job)
         job = Job(info=job, query=self)
         self.jobs.append(job)
         return job
@@ -146,12 +148,17 @@ class Query:
         import re
         self = cls()
         if self.api_type:
+            print("Left tickets query path=%s"%self.api_type)
             return self.api_type
+        print("api_query_init_page=%s"%API_QUERY_INIT_PAGE)
+        #response = self.session.get(API_QUERY_INIT_PAGE, proxies={"http": "http://135.251.33.16:8080", "https": "http://135.251.33.16:8080"})
         response = self.session.get(API_QUERY_INIT_PAGE)
+        print("response.status_code=%s"%response.status_code)
         if response.status_code == 200:
             res = re.search(r'var CLeftTicketUrl = \'(.*)\';', response.text)
             try:
                 self.api_type = res.group(1)
+                #print("api_type=%s"%self.api_type)
             except IndexError:
                 pass
         return cls.get_query_api_type()

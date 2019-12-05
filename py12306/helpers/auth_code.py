@@ -45,12 +45,14 @@ class AuthCode:
 
     def download_code(self):
         url = API_AUTH_CODE_BASE64_DOWNLOAD.format(random=random.random())
+        print("auth code download url=%s"%url)
         # code_path = self.data_path + 'code.png'
         try:
             UserLog.add_quick_log(UserLog.MESSAGE_DOWNLAODING_THE_CODE).flush()
             # response = self.session.save_to_file(url, code_path)  # TODO 返回错误情况
             response = self.session.get(url)
             result = response.json()
+            print("auth code response json=%s"%result)
             if result.get('image'):
                 return result.get('image')
             raise SSLError('返回数据为空')

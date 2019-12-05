@@ -40,7 +40,9 @@ class User:
         self.init_users()
         UserLog.print_init_users(users=self.users)
         # 多线程维护用户
-        create_thread_and_run(jobs=self.users, callback_name='run', wait=Const.IS_TEST)
+        #create_thread_and_run(jobs=self.users, callback_name='run', wait=Const.IS_TEST)
+        # 始终先登录再查票买票
+        create_thread_and_run(jobs=self.users, callback_name='run', wait=True)
 
     def init_users(self):
         for account in self.user_accounts:
