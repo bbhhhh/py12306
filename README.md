@@ -133,7 +133,10 @@ docker-compose up -d
     - 新增 ServerChan 和 PushBear 微信推送
 - 19-01-18
     - 新增 CDN 查询
-
+- 19-12-05
+    - 配置文件增加http代理配置
+    - 配置文件中12306账号密码可以填空，密码通过屏幕实时输入，提高安全性,输错3次程序退出
+    
 ## 截图
 ### Web 管理页面
 ![Web 管理页面图片](https://github.com/pjialin/py12306/blob/master/data/images/web.png)
