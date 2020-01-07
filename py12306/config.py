@@ -95,7 +95,7 @@ class Config:
     CDN_ENABLED_AVAILABLE_ITEM_FILE = QUERY_DATA_DIR + 'available.json'
 
     # Default time out
-    TIME_OUT_OF_REQUEST = 5
+    TIME_OUT_OF_REQUEST = 30
 
     # http proxy
     HTTP_PROXIES = {}

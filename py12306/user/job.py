@@ -131,10 +131,10 @@ class UserJob:
         获取验证码结果
         :return 权限校验码
         """
-        self.password = ''
+        #self.password = ''
         while (self.password is None or self.password == ''):
             self.password = input("请输入用户{}的12306登录密码...\n".format(self.user_name))
-            print("\n你输入的密码是：{}".format(self.password))
+            #print("\n你输入的密码是：{}".format(self.password))
 
 
         data = {
